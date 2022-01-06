@@ -11,8 +11,11 @@ function App() {
 
   const [emails, setEmails] = useState(initialEmails)
 
-  function toggleRead(email) {
-    return !email.read
+  function toggleRead(targetEmail) {
+    const updatedEmails = JSON.parse(JSON.stringify(emails))
+    const match = updatedEmails.find(email => email.id === targetEmail.id)
+    match.read = !match.read
+    setEmails(updatedEmails)
   }
 
   function toggleStarr(email) {
@@ -21,13 +24,6 @@ function App() {
 
   function toggleHideRead() {
     setHideRead(!hideRead)
-  }
-
-  function updateReadState(id, read) {
-    let index = emails.findIndex(email => email.id === id)
-    emails[index].read = read
-    let updatedEmails = [...emails]
-    setEmails(updatedEmails)
   }
 
   function updateStarrState(id, starr) {
@@ -79,10 +75,9 @@ function App() {
         <ul className="emails">
           {emailsToDisplay.map(function (email) {
             return (
-              <li className={`email ${email.read ? 'read' : 'read-email'}`}>
+              <li className={`email ${email.read ? 'read' : 'unread'}`}>
                 <input type="checkbox" checked={email.read} onClick={function () {
-                  const changedReadProperty = toggleRead(email)
-                  updateReadState(email.id, changedReadProperty)
+                  toggleRead(email)
                 }} />
                 <input class="star-checkbox" type="checkbox" checked={email.starred}
                 onClick={function () {
